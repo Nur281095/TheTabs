@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "5740484175",
+    "project_id": "tabs-b303e",
+    "storage_bucket": "tabs-b303e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:5740484175:android:7cefd3cd37b927e8237c3a",
+        "android_client_info": {
+          "package_name": "com.app.tabs"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "5740484175-ppohfj7tc2k4dlc8j8np4rh0ijne8ggq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.tabs",
+            "certificate_hash": "e3979ebff416aa795c6e6c7ac065a9a2d7f3a008"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBzwGqXNpcUrrQwW9Vlpap_pXRBgW88gWo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "5740484175-89gjs98ovchm382l0lsivp746uf6o4pe.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.app.tabs"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,16 @@
+[debug] [2025-09-09T12:17:40.500Z] ----------------------------------------------------------------------
+[debug] [2025-09-09T12:17:40.505Z] Command:       /opt/homebrew/Cellar/node/24.7.0/bin/node /opt/homebrew/bin/firebase deploy --only firestore:rules
+[debug] [2025-09-09T12:17:40.505Z] CLI Version:   14.15.2
+[debug] [2025-09-09T12:17:40.505Z] Platform:      darwin
+[debug] [2025-09-09T12:17:40.505Z] Node Version:  v24.7.0
+[debug] [2025-09-09T12:17:40.505Z] Time:          Tue Sep 09 2025 17:17:40 GMT+0500 (Pakistan Standard Time)
+[debug] [2025-09-09T12:17:40.505Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-09-09T12:17:40.578Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-09-09T12:17:40.578Z] > authorizing via signed-in user (thetabsapp@gmail.com)
+[debug] [2025-09-09T12:17:40.578Z] [iam] checking project tabs-b303e for permissions ["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get"]
+[debug] [2025-09-09T12:17:40.578Z] Checked if tokens are valid: false, expires at: 1757419569922
+[debug] [2025-09-09T12:17:40.578Z] Checked if tokens are valid: false, expires at: 1757419569922
+[debug] [2025-09-09T12:17:40.578Z] > refreshing access token with scopes: []
+[debug] [2025-09-09T12:17:40.579Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2025-09-09T12:17:40.579Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]

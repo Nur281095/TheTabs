@@ -1,0 +1,9 @@
+{
+  "firestore": [
+    {
+      "database": "b303e",
+      "rules": "firestore.rules",
+      "indexes": "firestore.indexes.json"
+    }
+  ]
+}
