@@ -3,6 +3,7 @@ import '../utils/firestore_service.dart';
 import '../models/message.dart';
 import '../services/auth_service.dart';
 import '../services/conversation_service.dart';
+import '../config/ai_config.dart';
 import '../services/topic_detection_service.dart';
 
 class MessageService {
@@ -378,9 +379,15 @@ class MessageService {
     // Run in background without awaiting
     Future.microtask(() async {
       try {
-        final shouldAnalyze = await _topicDetectionService.shouldAnalyzeTab(tabId);
+        final messages = await getTabMessagesFuture(
+          tabId,
+          limit: AIConfig.maxMessagesToAnalyze,
+        );
+
+        final shouldAnalyze =
+            _topicDetectionService.shouldAnalyzeTab(tabId, messages);
         if (shouldAnalyze) {
-          await _topicDetectionService.analyzeAndRenameTab(tabId);
+          await _topicDetectionService.analyzeAndRenameTab(tabId, messages);
         }
       } catch (e) {
         print('Error triggering topic detection: $e');

@@ -1,7 +1,6 @@
 import 'package:google_generative_ai/google_generative_ai.dart';
 import '../models/message.dart';
 import '../services/chat_tab_service.dart';
-import '../services/message_service.dart';
 import '../config/ai_config.dart';
 
 class TopicDetectionService {
@@ -10,7 +9,6 @@ class TopicDetectionService {
   TopicDetectionService._internal();
 
   final ChatTabService _chatTabService = ChatTabService();
-  final MessageService _messageService = MessageService();
   
   late final GenerativeModel _model;
   
@@ -39,19 +37,16 @@ class TopicDetectionService {
   }
 
   /// Analyze messages in a tab and auto-rename if topic detected
-  Future<String?> analyzeAndRenameTab(String tabId) async {
+  Future<String?> analyzeAndRenameTab(
+    String tabId,
+    List<MessageModel> messages,
+  ) async {
     try {
       // Check if already analyzed
       if (_analyzedTabs[tabId] == true) {
         return null;
       }
-      
-      // Get messages from the tab
-      final messages = await _messageService.getTabMessagesFuture(
-        tabId,
-        limit: AIConfig.maxMessagesToAnalyze,
-      );
-      
+
       // Check if we have enough messages
       if (messages.length < AIConfig.minMessagesForDetection) {
         return null;
@@ -229,9 +224,12 @@ Topic name:''';
   }
 
   /// Manually trigger topic detection for a tab
-  Future<String?> manuallyDetectTopic(String tabId) async {
+  Future<String?> manuallyDetectTopic(
+    String tabId,
+    List<MessageModel> messages,
+  ) async {
     _analyzedTabs.remove(tabId); // Remove from cache to force re-analysis
-    return await analyzeAndRenameTab(tabId);
+    return await analyzeAndRenameTab(tabId, messages);
   }
 
   /// Reset analysis cache for a tab
@@ -245,17 +243,12 @@ Topic name:''';
   }
 
   /// Check if a tab should be analyzed (has enough messages)
-  Future<bool> shouldAnalyzeTab(String tabId) async {
+  bool shouldAnalyzeTab(String tabId, List<MessageModel> messages) {
     try {
       if (_analyzedTabs[tabId] == true) {
         return false;
       }
-      
-      final messages = await _messageService.getTabMessagesFuture(
-        tabId,
-        limit: AIConfig.minMessagesForDetection + 1,
-      );
-      
+
       return messages.length >= AIConfig.minMessagesForDetection;
     } catch (e) {
       print('Error checking if tab should be analyzed: $e');
