@@ -26,11 +26,11 @@
 		</data>
 		<key>Modules/FirebaseCoreInternal.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo</key>
 		<data>
-		C2hD5PtMylhlVbdUxsGU9/LsrFI=
+		4ZFAkh4hKbVue/EGpuoezFVFE4U=
 		</data>
 		<key>Modules/FirebaseCoreInternal.swiftmodule/Project/x86_64-apple-ios-simulator.swiftsourceinfo</key>
 		<data>
-		La+2hSO4ZBg7hoM1PdwTpDZzKCo=
+		0abcWUuQ0QFSLWdQXeLv63K06lM=
 		</data>
 		<key>Modules/FirebaseCoreInternal.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
 		<data>
@@ -42,7 +42,7 @@
 		</data>
 		<key>Modules/FirebaseCoreInternal.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		s1tYueZe56FUpIIpgbxDfC+DFck=
+		VsNXDSpWOUBbQtodnaHF+ujmCeg=
 		</data>
 		<key>Modules/FirebaseCoreInternal.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<data>
@@ -54,7 +54,7 @@
 		</data>
 		<key>Modules/FirebaseCoreInternal.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		NAox3h47bQeIuVoeyRXt18GaDhI=
+		efzdsoSX+MmuMSlfZtFqZ91pCrs=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -95,14 +95,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			gj05UtzwJSQfT/olhh9IYJRTC2X3p4iWZ1XQrYqJTs4=
+			FK77sl5t+375UrcviY43HV5fXu1ZzFXK8FTy9LRHPBA=
 			</data>
 		</dict>
 		<key>Modules/FirebaseCoreInternal.swiftmodule/Project/x86_64-apple-ios-simulator.swiftsourceinfo</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			V1X41hq7AAZ/PAfhbvHZTzytI8bN+CwM3KmETN6bVbg=
+			b4cOR0jIwvHW+Sk21bmbFeTW7Dm/EWVO0Bi3rMVE1OY=
 			</data>
 		</dict>
 		<key>Modules/FirebaseCoreInternal.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
@@ -123,7 +123,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			xhefyGbp48QCzJLBXc6ILv1yXby+Wb3nF1Ux6vTEsAk=
+			r9GJ4kMsOt2+FbpRaQvww1P6PgWQcaIjgp8qV2LQv88=
 			</data>
 		</dict>
 		<key>Modules/FirebaseCoreInternal.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
@@ -144,7 +144,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			DCtImN7TypPxBfPQ5kv3+JRRx5h2buthhEas83fIBwE=
+			HWYrPEjD/KNwMQ5W9V6mCBuL7cotWQeSw9Z5YsOctyg=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
