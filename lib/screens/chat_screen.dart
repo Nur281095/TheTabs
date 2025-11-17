@@ -483,35 +483,31 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
               margin: const EdgeInsets.only(right: 8),
               height: 42,
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              decoration: BoxDecoration(
-                color: isSelected
-                    ? Colors.white.withOpacity(0.35)
-                    : Colors.white.withOpacity(0.15),
-                borderRadius: BorderRadius.circular(21),
-                border: Border.all(
-                  color: isSelected 
-                      ? Colors.white.withOpacity(0.5)
-                      : Colors.white.withOpacity(0.25),
-                  width: isSelected ? 1.5 : 1,
+                decoration: BoxDecoration(
+                  color: isSelected ? AppColors.surfaceBright : AppColors.surface,
+                  borderRadius: BorderRadius.circular(21),
+                  border: Border.all(
+                    color: isSelected ? AppColors.primary : AppColors.border,
+                    width: isSelected ? 1.5 : 1,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(isSelected ? 0.08 : 0.05),
+                      blurRadius: isSelected ? 10 : 6,
+                      offset: Offset(0, isSelected ? 3 : 2),
+                    ),
+                  ],
                 ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(isSelected ? 0.15 : 0.08),
-                    blurRadius: isSelected ? 12 : 8,
-                    offset: Offset(0, isSelected ? 3 : 2),
-                  ),
-                ],
-              ),
-              child: Center(
-                child: Text(
-                  tab.tabName,
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white.withOpacity(isSelected ? 1.0 : 0.85),
-                    letterSpacing: -0.2,
-                  ),
-                  textAlign: TextAlign.center,
+                child: Center(
+                  child: Text(
+                    tab.tabName,
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                      color: isSelected ? AppColors.textPrimary : AppColors.textSecondary,
+                      letterSpacing: -0.2,
+                    ),
+                    textAlign: TextAlign.center,
                 ),
               ),
             ),
@@ -524,16 +520,12 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   Widget _buildFloatingActionButton() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.15),
+        color: AppColors.primary,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.white.withOpacity(0.3),
-          width: 1,
-        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            blurRadius: 20,
+            color: AppColors.primary.withOpacity(0.2),
+            blurRadius: 16,
             offset: const Offset(0, 8),
           ),
         ],
@@ -547,19 +539,17 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
         backgroundColor: Colors.transparent,
         elevation: 0,
         child: isCreatingTab
-            ? SizedBox(
+            ? const SizedBox(
                 width: 24,
                 height: 24,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    Colors.white.withOpacity(0.9),
-                  ),
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                 ),
               )
-            : Icon(
+            : const Icon(
                 Icons.add_rounded,
-                color: Colors.white.withOpacity(0.9),
+                color: Colors.white,
                 size: 28,
               ),
       ),
@@ -716,80 +706,66 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
               ),
             ],
           ),
-          child: Text(
-            date,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: Colors.white.withOpacity(0.8),
-              letterSpacing: 0.5,
-            ),
-          ),
+      child: Text(
+        date,
+        style: const TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textSecondary,
+          letterSpacing: 0.5,
+        ),
+      ),
         ),
       ),
     );
   }
 
   Widget _buildMessageBubble(MessageModel message) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 4), // Increased spacing between bubbles
-      child: Row(
-        mainAxisAlignment: message.senderId == _authService.currentUserId
-            ? MainAxisAlignment.end
-            : MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          if (message.senderId == _authService.currentUserId) 
-            Expanded(child: Container()) // Push sent messages to the right
-          else
-            const SizedBox(width: 8), // Small margin for received messages
-          
-          Flexible(
-            child: Container(
-              constraints: _getBubbleConstraints(message),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                gradient: message.senderId == _authService.currentUserId
-                    ? LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          Colors.white.withOpacity(0.3),
-                          Colors.white.withOpacity(0.2),
-                        ],
-                      )
-                    : LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          Colors.white.withOpacity(0.2),
-                          Colors.white.withOpacity(0.12),
-                        ],
-                      ),
-                borderRadius: BorderRadius.only(
-                  topLeft: const Radius.circular(20),
-                  topRight: const Radius.circular(20),
-                  bottomLeft: message.senderId == _authService.currentUserId 
-                      ? const Radius.circular(20) 
-                      : const Radius.circular(6),
-                  bottomRight: message.senderId == _authService.currentUserId 
-                      ? const Radius.circular(6) 
-                      : const Radius.circular(20),
-                ),
-                border: Border.all(
+      return Container(
+        margin: const EdgeInsets.symmetric(vertical: 4), // Increased spacing between bubbles
+        child: Row(
+          mainAxisAlignment: message.senderId == _authService.currentUserId
+              ? MainAxisAlignment.end
+              : MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            if (message.senderId == _authService.currentUserId)
+              Expanded(child: Container()) // Push sent messages to the right
+            else
+              const SizedBox(width: 8), // Small margin for received messages
+
+            Flexible(
+              child: Container(
+                constraints: _getBubbleConstraints(message),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                decoration: BoxDecoration(
                   color: message.senderId == _authService.currentUserId
-                      ? Colors.white.withOpacity(0.3)
-                      : Colors.white.withOpacity(0.25),
-                  width: 1,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.15),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
+                      ? AppColors.primary.withOpacity(0.12)
+                      : AppColors.surface,
+                  borderRadius: BorderRadius.only(
+                    topLeft: const Radius.circular(20),
+                    topRight: const Radius.circular(20),
+                    bottomLeft: message.senderId == _authService.currentUserId
+                        ? const Radius.circular(20)
+                        : const Radius.circular(6),
+                    bottomRight: message.senderId == _authService.currentUserId
+                        ? const Radius.circular(6)
+                        : const Radius.circular(20),
                   ),
-                ],
-              ),
+                  border: Border.all(
+                    color: message.senderId == _authService.currentUserId
+                        ? AppColors.primary.withOpacity(0.35)
+                        : AppColors.border,
+                    width: 1,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.06),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
               child: _shouldUseIntrinsicWidth(message)
                   ? IntrinsicWidth(
                       child: Column(
@@ -801,22 +777,22 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                           Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                                                        Text(
-                            _formatTime(message.sentAt),
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.white.withOpacity(0.7),
-                            ),
-                          ),
+                              Text(
+                                _formatTime(message.sentAt),
+                                style: const TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.textSecondary,
+                                ),
+                              ),
                           if (message.senderId == _authService.currentUserId) ...[
                             const SizedBox(width: 4),
-                            Icon(
-                              _getStatusIcon(message),
-                              size: 14,
-                              color: Colors.white.withOpacity(0.8),
-                            ),
-                          ],
+                                Icon(
+                                  _getStatusIcon(message),
+                                  size: 14,
+                                  color: AppColors.textSecondary,
+                                ),
+                              ],
                             ],
                           ),
                         ],
@@ -834,24 +810,24 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text(
-                              _formatTime(message.sentAt),
-                              style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.white.withOpacity(0.7),
+                              Text(
+                                _formatTime(message.sentAt),
+                                style: const TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.textSecondary,
+                                ),
                               ),
-                            ),
                             if (message.senderId == _authService.currentUserId) ...[
                               const SizedBox(width: 4),
-                              Icon(
-                                _getStatusIcon(message),
-                                size: 14,
-                                color: Colors.white.withOpacity(0.8),
-                              ),
+                                Icon(
+                                  _getStatusIcon(message),
+                                  size: 14,
+                                  color: AppColors.textSecondary,
+                                ),
+                              ],
                             ],
-                          ],
-                        ),
+                          ),
                       ],
                     ),
             ),
@@ -914,20 +890,18 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   Widget _buildMessageContent(MessageModel message) {
     switch (message.messageType) {
       case MessageType.text:
-        return Text(
-          message.content ?? '',
-          style: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w400,
-            color: message.isFromCurrentUser(_authService.currentUserId ?? '')
-                ? Colors.white
-                : const Color(0xFF1A1A1A),
-            height: 1.3,
-            letterSpacing: -0.1,
-          ),
-          softWrap: true,
-          overflow: TextOverflow.visible,
-        );
+          return Text(
+            message.content ?? '',
+            style: const TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w500,
+              color: AppColors.textPrimary,
+              height: 1.3,
+              letterSpacing: -0.1,
+            ),
+            softWrap: true,
+            overflow: TextOverflow.visible,
+          );
       case MessageType.image:
         return _buildImageMessage(message);
       case MessageType.file:
@@ -940,21 +914,19 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if ((message.content ?? '').isNotEmpty) ...[
-          Text(
-            message.content ?? '',
-            style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w400,
-              color: isFromCurrentUser
-                  ? Colors.white
-                  : const Color(0xFF1A1A1A),
-              height: 1.3,
-              letterSpacing: -0.1,
+          if ((message.content ?? '').isNotEmpty) ...[
+            Text(
+              message.content ?? '',
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+                color: AppColors.textPrimary,
+                height: 1.3,
+                letterSpacing: -0.1,
+              ),
             ),
-          ),
-          const SizedBox(height: 8),
-        ],
+            const SizedBox(height: 8),
+          ],
         ClipRRect(
           borderRadius: BorderRadius.circular(12),
           child: Image.network(
