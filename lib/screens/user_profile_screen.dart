@@ -81,27 +81,17 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
-        statusBarBrightness: Platform.isIOS ? Brightness.dark : Brightness.light,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Platform.isIOS ? Brightness.light : Brightness.light,
       ),
     );
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.background,
       body: Container(
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            stops: [0.0, 0.3, 0.6, 1.0],
-            colors: [
-              AppColors.primary,
-              Color(0xFF764BA2),
-              AppColors.primary,
-              Color(0xFF9333EA),
-            ],
-          ),
+          color: AppColors.background,
         ),
         child: SafeArea(
           child: Column(
@@ -137,15 +127,15 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   width: 44,
                   height: 44,
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.15),
+                    color: AppColors.surface,
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(
-                      color: Colors.white.withOpacity(0.2),
+                      color: AppColors.border,
                       width: 1,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
+                        color: Colors.black.withOpacity(0.05),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
@@ -153,7 +143,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   ),
                   child: const Icon(
                     Icons.arrow_back_ios_new_rounded,
-                    color: Colors.white,
+                    color: AppColors.textPrimary,
                     size: 20,
                   ),
                 ),
@@ -165,9 +155,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             child: Text(
               'Profile',
               style: TextStyle(
-                color: Colors.white,
+                color: AppColors.textPrimary,
                 fontSize: Platform.isIOS ? 17.0 : 20.0,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w700,
                 letterSpacing: Platform.isIOS ? -0.4 : -0.2,
                 height: 1.2,
               ),
