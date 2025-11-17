@@ -14,6 +14,7 @@ import '../services/conversation_service.dart';
 import '../services/message_service.dart';
 import '../services/auth_service.dart';
 import '../services/file_upload_service.dart';
+import '../config/app_colors.dart';
 
 class ChatScreen extends StatefulWidget {
   final String conversationId;
@@ -267,52 +268,35 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
-        statusBarBrightness: Platform.isIOS ? Brightness.dark : Brightness.light,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Platform.isIOS ? Brightness.light : Brightness.light,
       ),
     );
 
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      backgroundColor: Colors.white,
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            stops: [0.0, 0.3, 0.6, 1.0],
-            colors: [
-              Color(0xFF667EEA),
-              Color(0xFF764BA2),
-              Color(0xFF667EEA),
-              Color(0xFF9333EA),
-            ],
-          ),
-        ),
-        child: SafeArea(
-          child: Stack(
-            children: [
-              Column(
-                children: [
-                  _buildModernAppBar(context),
-                  if (isLoading)
-                    Expanded(child: _buildLoadingState())
-                  else ...[
-                    _buildModernTabBar(),
-                    Expanded(child: _buildMessagesList()),
-                    _buildModernMessageInput(),
-                  ],
+      backgroundColor: AppColors.background,
+      body: SafeArea(
+        child: Stack(
+          children: [
+            Column(
+              children: [
+                _buildModernAppBar(context),
+                if (isLoading)
+                  Expanded(child: _buildLoadingState())
+                else ...[
+                  _buildModernTabBar(),
+                  Expanded(child: _buildMessagesList()),
+                  _buildModernMessageInput(),
                 ],
+              ],
+            ),
+            if (!isLoading)
+              Positioned(
+                bottom: 100,
+                right: 20,
+                child: _buildFloatingActionButton(),
               ),
-              // Custom positioned FAB above message input
-              if (!isLoading)
-                Positioned(
-                  bottom: 100, // Position above message input area
-                  right: 20,
-                  child: _buildFloatingActionButton(),
-                ),
-            ],
-          ),
+          ],
         ),
       ),
       floatingActionButton: null,
@@ -321,183 +305,111 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
 
   Widget _buildModernAppBar(BuildContext context) {
     return Container(
-      height: Platform.isIOS ? 44.0 : 56.0, // Native platform heights
-      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: const BoxDecoration(
+        color: AppColors.background,
+        border: Border(
+          bottom: BorderSide(color: AppColors.border, width: 1),
+        ),
+      ),
       child: Row(
         children: [
-          // Back button with glassmorphism effect
+          _buildIconButton(
+            icon: Icons.arrow_back_ios_new_rounded,
+            onTap: () => Navigator.pop(context),
+          ),
+          const SizedBox(width: 12),
           Container(
-            margin: const EdgeInsets.only(left: 8, right: 12),
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                borderRadius: BorderRadius.circular(14),
-                onTap: () => Navigator.pop(context),
-                child: Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.15),
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(
-                      color: Colors.white.withOpacity(0.2),
-                      width: 1,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: const Icon(
-                    Icons.arrow_back_ios_new_rounded,
-                    color: Colors.white,
-                    size: 20,
-                  ),
-                ),
-              ),
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppColors.surface,
+              border: Border.all(color: AppColors.border),
+            ),
+            child: ClipOval(
+              child: _otherUser?.profilePhotoUrl != null
+                  ? Image.network(
+                      _otherUser!.profilePhotoUrl!,
+                      width: 40,
+                      height: 40,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return _buildDefaultAvatar();
+                      },
+                    )
+                  : _buildDefaultAvatar(),
             ),
           ),
-          // User info section
+          const SizedBox(width: 12),
           Expanded(
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // User avatar with glassmorphism
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        Colors.white.withOpacity(0.3),
-                        Colors.white.withOpacity(0.1),
-                      ],
-                    ),
-                    border: Border.all(
-                      color: Colors.white.withOpacity(0.3),
-                      width: 2,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
+                Text(
+                  _otherUser?.displayName ?? 'Unknown User',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
                   ),
-                  child: ClipOval(
-                    child: _otherUser?.profilePhotoUrl != null
-                        ? Image.network(
-                            _otherUser!.profilePhotoUrl!,
-                            width: 36,
-                            height: 36,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return _buildDefaultAvatar();
-                            },
-                          )
-                        : _buildDefaultAvatar(),
-                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(width: 12),
-                // User name and status
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        _otherUser?.displayName ?? 'Unknown User',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                          letterSpacing: -0.1,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        isTyping ? 'typing...' : 'last seen recently',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
-                          color: isTyping 
-                              ? const Color(0xFF00C851)
-                              : Colors.white.withOpacity(0.7),
-                          letterSpacing: -0.1,
-                        ),
-                      ),
-                    ],
+                const SizedBox(height: 4),
+                Text(
+                  isTyping ? 'typing...' : 'last seen recently',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: isTyping ? AppColors.success : AppColors.textSecondary,
                   ),
                 ),
               ],
             ),
           ),
-          // Menu button
-          Container(
-            margin: const EdgeInsets.only(right: 8),
-            child: Material(
-              color: Colors.transparent,
-              child: PopupMenuButton<String>(
-                icon: Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.15),
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(
-                      color: Colors.white.withOpacity(0.2),
-                      width: 1,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: const Icon(
-                    Icons.more_vert_rounded,
-                    color: Colors.white,
-                    size: 20,
-                  ),
-                ),
-                onSelected: (String value) {
-                  if (value == 'delete') {
-                    _showDeleteConversationDialog();
-                  }
-                },
-                itemBuilder: (BuildContext context) => [
-                  const PopupMenuItem<String>(
-                    value: 'delete',
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.delete_outline_rounded,
-                          color: Color(0xFFFF3B30),
-                          size: 20,
-                        ),
-                        SizedBox(width: 12),
-                        Text(
-                          'Delete Conversation',
-                          style: TextStyle(
-                            color: Color(0xFFFF3B30),
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+          PopupMenuButton<String>(
+            icon: Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: AppColors.surface,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: AppColors.border),
+              ),
+              child: const Icon(
+                Icons.more_vert_rounded,
+                color: AppColors.textPrimary,
+                size: 20,
               ),
             ),
+            onSelected: (String value) {
+              if (value == 'delete') {
+                _showDeleteConversationDialog();
+              }
+            },
+            itemBuilder: (BuildContext context) => const [
+              PopupMenuItem<String>(
+                value: 'delete',
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.delete_outline_rounded,
+                      color: Color(0xFFFF3B30),
+                      size: 20,
+                    ),
+                    SizedBox(width: 12),
+                    Text(
+                      'Delete Conversation',
+                      style: TextStyle(
+                        color: Color(0xFFFF3B30),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -509,19 +421,13 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
       width: 36,
       height: 36,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.white.withOpacity(0.2),
-            Colors.white.withOpacity(0.1),
-          ],
-        ),
+        color: AppColors.surface,
         shape: BoxShape.circle,
+        border: Border.all(color: AppColors.border),
       ),
       child: Icon(
         Icons.person_rounded,
-        color: Colors.white.withOpacity(0.8),
+        color: AppColors.textSecondary,
         size: 20,
       ),
     );
@@ -2029,7 +1935,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
         barrierDismissible: false,
         builder: (context) => const Center(
           child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF667EEA)),
+            valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
           ),
         ),
       );

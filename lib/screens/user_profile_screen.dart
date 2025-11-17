@@ -6,6 +6,7 @@ import '../models/user.dart';
 import '../services/auth_service.dart';
 import '../utils/firestore_service.dart';
 import 'phone_signup_screen.dart';
+import '../config/app_colors.dart';
 
 class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({super.key});
@@ -95,9 +96,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             end: Alignment.bottomRight,
             stops: [0.0, 0.3, 0.6, 1.0],
             colors: [
-              Color(0xFF667EEA),
+              AppColors.primary,
               Color(0xFF764BA2),
-              Color(0xFF667EEA),
+              AppColors.primary,
               Color(0xFF9333EA),
             ],
           ),
@@ -959,12 +960,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             onPressed: () => Navigator.pop(context, ImageSource.gallery),
             icon: const Icon(
               Icons.photo_library_rounded,
-              color: Color(0xFF667EEA),
+              color: AppColors.primary,
             ),
             label: const Text(
               'Gallery',
               style: TextStyle(
-                color: Color(0xFF667EEA),
+                color: AppColors.primary,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -973,12 +974,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             onPressed: () => Navigator.pop(context, ImageSource.camera),
             icon: const Icon(
               Icons.camera_alt_rounded,
-              color: Color(0xFF667EEA),
+              color: AppColors.primary,
             ),
             label: const Text(
               'Camera',
               style: TextStyle(
-                color: Color(0xFF667EEA),
+                color: AppColors.primary,
                 fontWeight: FontWeight.w600,
               ),
             ),

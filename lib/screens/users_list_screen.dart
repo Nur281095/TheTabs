@@ -5,6 +5,7 @@ import '../models/user.dart';
 import '../services/user_service.dart';
 import '../services/conversation_service.dart';
 import 'chat_screen.dart';
+import '../config/app_colors.dart';
 
 class UsersListScreen extends StatefulWidget {
   const UsersListScreen({super.key});
@@ -68,36 +69,21 @@ class _UsersListScreenState extends State<UsersListScreen> {
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
-        statusBarBrightness: Platform.isIOS ? Brightness.dark : Brightness.light,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Platform.isIOS ? Brightness.light : Brightness.light,
       ),
     );
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      backgroundColor: Colors.white,
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            stops: [0.0, 0.3, 0.6, 1.0],
-            colors: [
-              Color(0xFF667EEA),
-              Color(0xFF764BA2),
-              Color(0xFF667EEA),
-              Color(0xFF9333EA),
-            ],
-          ),
-        ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              _buildModernAppBar(context),
-              _buildSearchSection(),
-              Expanded(child: _buildUsersList()),
-            ],
-          ),
+      backgroundColor: AppColors.background,
+      body: SafeArea(
+        child: Column(
+          children: [
+            _buildModernAppBar(context),
+            _buildSearchSection(),
+            Expanded(child: _buildUsersList()),
+          ],
         ),
       ),
     );
@@ -121,10 +107,10 @@ class _UsersListScreenState extends State<UsersListScreen> {
                   width: 44,
                   height: 44,
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.15),
+                    color: AppColors.surface,
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(
-                      color: Colors.white.withOpacity(0.2),
+                      color: AppColors.border,
                       width: 1,
                     ),
                     boxShadow: [
@@ -137,7 +123,7 @@ class _UsersListScreenState extends State<UsersListScreen> {
                   ),
                   child: const Icon(
                     Icons.arrow_back_ios_new_rounded,
-                    color: Colors.white,
+                    color: AppColors.textPrimary,
                     size: 20,
                   ),
                 ),
