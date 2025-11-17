@@ -11,6 +11,7 @@ import 'user_profile_screen.dart';
 import 'chat_screen.dart';
 import '../services/conversation_service.dart';
 import '../services/auth_service.dart';
+import '../config/app_colors.dart';
 
 class ConversationsScreen extends StatefulWidget {
   const ConversationsScreen({super.key});
@@ -143,36 +144,20 @@ class _ConversationsScreenState extends State<ConversationsScreen> with TickerPr
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
-        statusBarBrightness: Platform.isIOS ? Brightness.dark : Brightness.light,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Platform.isIOS ? Brightness.light : Brightness.light,
       ),
     );
 
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      backgroundColor: Colors.white,
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            stops: [0.0, 0.3, 0.6, 1.0],
-            colors: [
-              Color(0xFF667EEA),
-              Color(0xFF764BA2),
-              Color(0xFF667EEA),
-              Color(0xFF9333EA),
-            ],
-          ),
-        ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              _buildModernAppBar(context),
-              _buildSearchSection(),
-              Expanded(child: _buildConversationsList()),
-            ],
-          ),
+      backgroundColor: AppColors.background,
+      body: SafeArea(
+        child: Column(
+          children: [
+            _buildModernAppBar(context),
+            _buildSearchSection(),
+            Expanded(child: _buildConversationsList()),
+          ],
         ),
       ),
       floatingActionButton: _buildFloatingActionButton(),
@@ -181,124 +166,82 @@ class _ConversationsScreenState extends State<ConversationsScreen> with TickerPr
 
   Widget _buildModernAppBar(BuildContext context) {
     return Container(
-      height: Platform.isIOS ? 44.0 : 56.0, // Native platform heights
-      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: const BoxDecoration(
+        color: AppColors.background,
+        border: Border(
+          bottom: BorderSide(color: AppColors.border, width: 1),
+        ),
+      ),
       child: Row(
         children: [
-          // Profile button with glassmorphism effect
-          Container(
-            margin: const EdgeInsets.only(left: 8, right: 16),
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                borderRadius: BorderRadius.circular(22),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const UserProfileScreen(),
-                    ),
-                  );
-                },
-                child: Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.15),
-                    borderRadius: BorderRadius.circular(22),
-                    border: Border.all(
-                      color: Colors.white.withOpacity(0.2),
-                      width: 1,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const UserProfileScreen(),
+                ),
+              );
+            },
+            child: Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: AppColors.surface,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: AppColors.border),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.04),
+                    blurRadius: 12,
+                    offset: const Offset(0, 6),
                   ),
-                  child: ClipOval(
-                    child: Image.network(
-                      'https://picsum.photos/150/150?random=999',
-                      width: 44,
-                      height: 44,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          width: 44,
-                          height: 44,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                Colors.white.withOpacity(0.2),
-                                Colors.white.withOpacity(0.1),
-                              ],
-                            ),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            Icons.person_rounded,
-                            color: Colors.white.withOpacity(0.8),
-                            size: 24,
-                          ),
-                        );
-                      },
-                    ),
-                  ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Image.network(
+                  'https://picsum.photos/150/150?random=999',
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Icon(
+                      Icons.person_rounded,
+                      color: AppColors.textSecondary,
+                      size: 26,
+                    );
+                  },
                 ),
               ),
             ),
           ),
-          // Title with modern typography
-          Expanded(
+          const SizedBox(width: 14),
+          const Expanded(
             child: Text(
               'Messages',
               style: TextStyle(
-                color: Colors.white,
-                fontSize: Platform.isIOS ? 17.0 : 20.0,
-                fontWeight: FontWeight.w600,
-                letterSpacing: Platform.isIOS ? -0.4 : -0.2,
-                height: 1.2,
+                color: AppColors.textPrimary,
+                fontSize: 22,
+                fontWeight: FontWeight.w700,
+                letterSpacing: -0.2,
               ),
             ),
           ),
-          // Search button
-          Container(
-            margin: const EdgeInsets.only(right: 8),
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
+          InkWell(
+            onTap: _toggleSearch,
+            borderRadius: BorderRadius.circular(14),
+            child: Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: AppColors.surface,
                 borderRadius: BorderRadius.circular(14),
-                onTap: _toggleSearch,
-                child: Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: isSearchMode 
-                        ? Colors.white.withOpacity(0.2)
-                        : Colors.white.withOpacity(0.15),
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(
-                      color: Colors.white.withOpacity(0.2),
-                      width: 1,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Icon(
-                    isSearchMode ? Icons.close_rounded : Icons.search_rounded,
-                    color: Colors.white,
-                    size: 20,
-                  ),
-                ),
+                border: Border.all(color: AppColors.border),
+              ),
+              child: Icon(
+                isSearchMode ? Icons.close_rounded : Icons.search_rounded,
+                color: AppColors.textPrimary,
+                size: 20,
               ),
             ),
           ),
@@ -310,16 +253,12 @@ class _ConversationsScreenState extends State<ConversationsScreen> with TickerPr
   Widget _buildFloatingActionButton() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.15),
+        color: AppColors.primary,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.white.withOpacity(0.3),
-          width: 1,
-        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            blurRadius: 20,
+            color: AppColors.primary.withOpacity(0.25),
+            blurRadius: 18,
             offset: const Offset(0, 8),
           ),
         ],
@@ -335,9 +274,9 @@ class _ConversationsScreenState extends State<ConversationsScreen> with TickerPr
         },
         backgroundColor: Colors.transparent,
         elevation: 0,
-        child: Icon(
+        child: const Icon(
           Icons.add_rounded,
-          color: Colors.white.withOpacity(0.9),
+          color: Colors.white,
           size: 28,
         ),
       ),
@@ -349,11 +288,11 @@ class _ConversationsScreenState extends State<ConversationsScreen> with TickerPr
       content: Text(
         message,
         style: const TextStyle(
-          color: Colors.white,
+          color: AppColors.textPrimary,
           fontWeight: FontWeight.w500,
         ),
       ),
-      backgroundColor: Colors.white.withOpacity(0.2),
+      backgroundColor: AppColors.surface,
       behavior: SnackBarBehavior.floating,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
@@ -369,10 +308,10 @@ class _ConversationsScreenState extends State<ConversationsScreen> with TickerPr
         alignment: Alignment.centerLeft,
         child: Text(
           'Recent conversations',
-          style: TextStyle(
-            color: Colors.white.withOpacity(0.9),
+          style: const TextStyle(
+            color: AppColors.textSecondary,
             fontSize: 16,
-            fontWeight: FontWeight.w500,
+            fontWeight: FontWeight.w600,
             letterSpacing: -0.2,
           ),
         ),
@@ -389,51 +328,38 @@ class _ConversationsScreenState extends State<ConversationsScreen> with TickerPr
             padding: const EdgeInsets.only(bottom: 12),
             child: Text(
               'Search conversations',
-              style: TextStyle(
-                color: Colors.white.withOpacity(0.9),
+              style: const TextStyle(
+                color: AppColors.textSecondary,
                 fontSize: 16,
-                fontWeight: FontWeight.w500,
-                letterSpacing: -0.2,
+                fontWeight: FontWeight.w600,
+                letterSpacing: -0.1,
               ),
             ),
           ),
-          // Modern search bar with glassmorphism
           Container(
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.15),
+              color: AppColors.surface,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: Colors.white.withOpacity(0.2),
-                width: 1,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 20,
-                  offset: const Offset(0, 4),
-                ),
-              ],
+              border: Border.all(color: AppColors.border),
             ),
             child: TextField(
               controller: searchController,
               autofocus: isSearchMode,
               style: const TextStyle(
-                color: Colors.white,
+                color: AppColors.textPrimary,
                 fontSize: 16,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w600,
                 letterSpacing: -0.1,
               ),
               decoration: InputDecoration(
                 hintText: 'Search by name or message...',
-                hintStyle: TextStyle(
-                  color: Colors.white.withOpacity(0.7),
+                hintStyle: const TextStyle(
+                  color: AppColors.textSecondary,
                   fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                  letterSpacing: -0.1,
                 ),
-                prefixIcon: Icon(
+                prefixIcon: const Icon(
                   Icons.search_rounded,
-                  color: Colors.white.withOpacity(0.8),
+                  color: AppColors.textSecondary,
                   size: 24,
                 ),
                 suffixIcon: searchController.text.isNotEmpty
@@ -444,13 +370,13 @@ class _ConversationsScreenState extends State<ConversationsScreen> with TickerPr
                         },
                         child: Container(
                           margin: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.2),
+                          decoration: const BoxDecoration(
+                            color: AppColors.surfaceBright,
                             shape: BoxShape.circle,
                           ),
-                          child: Icon(
+                          child: const Icon(
                             Icons.close_rounded,
-                            color: Colors.white.withOpacity(0.8),
+                            color: AppColors.textSecondary,
                             size: 18,
                           ),
                         ),
@@ -458,8 +384,8 @@ class _ConversationsScreenState extends State<ConversationsScreen> with TickerPr
                     : null,
                 border: InputBorder.none,
                 contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 16,
+                  horizontal: 12,
+                  vertical: 14,
                 ),
               ),
             ),
@@ -486,8 +412,8 @@ class _ConversationsScreenState extends State<ConversationsScreen> with TickerPr
       onRefresh: () async {
         _refreshConversations();
       },
-      color: Colors.white,
-      backgroundColor: Colors.white.withOpacity(0.2),
+      color: AppColors.primary,
+      backgroundColor: AppColors.surface,
       child: ListView.builder(
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 100),
         itemCount: filteredConversations.length,
@@ -514,17 +440,14 @@ class _ConversationsScreenState extends State<ConversationsScreen> with TickerPr
         bottom: index == filteredConversations.length - 1 ? 0 : 8,
       ),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.15),
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: Colors.white.withOpacity(0.2),
-          width: 1,
-        ),
+        border: Border.all(color: AppColors.border, width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withOpacity(0.05),
             blurRadius: 12,
-            offset: const Offset(0, 4),
+            offset: const Offset(0, 6),
           ),
         ],
       ),
@@ -553,7 +476,7 @@ class _ConversationsScreenState extends State<ConversationsScreen> with TickerPr
                               style: TextStyle(
                                 fontSize: 17,
                                 fontWeight: unreadCount > 0 ? FontWeight.w700 : FontWeight.w600,
-                                color: Colors.white,
+                                color: AppColors.textPrimary,
                                 letterSpacing: -0.2,
                               ),
                             ),
@@ -566,7 +489,7 @@ class _ConversationsScreenState extends State<ConversationsScreen> with TickerPr
                                 style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w400,
-                                  color: Colors.white.withOpacity(0.6),
+                                  color: AppColors.textSecondary,
                                   letterSpacing: -0.1,
                                 ),
                               ),
@@ -582,10 +505,10 @@ class _ConversationsScreenState extends State<ConversationsScreen> with TickerPr
                               _getLastMessage(conversationData),
                               style: TextStyle(
                                 fontSize: 15,
-                                fontWeight: unreadCount > 0 ? FontWeight.w500 : FontWeight.w400,
-                                color: unreadCount > 0 
-                                    ? Colors.white.withOpacity(0.9)
-                                    : Colors.white.withOpacity(0.7),
+                                fontWeight: unreadCount > 0 ? FontWeight.w600 : FontWeight.w400,
+                                color: unreadCount > 0
+                                    ? AppColors.textPrimary
+                                    : AppColors.textSecondary,
                                 letterSpacing: -0.1,
                               ),
                               maxLines: 1,
@@ -597,11 +520,11 @@ class _ConversationsScreenState extends State<ConversationsScreen> with TickerPr
                               margin: const EdgeInsets.only(left: 12),
                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                               decoration: BoxDecoration(
-                                color: const Color(0xFF00C851).withOpacity(0.9),
+                                color: AppColors.primary,
                                 borderRadius: BorderRadius.circular(12),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: const Color(0xFF00C851).withOpacity(0.3),
+                                    color: AppColors.primary.withOpacity(0.2),
                                     blurRadius: 6,
                                     offset: const Offset(0, 2),
                                   ),
@@ -627,12 +550,12 @@ class _ConversationsScreenState extends State<ConversationsScreen> with TickerPr
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.1),
+                    color: AppColors.surfaceBright,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
                     Icons.arrow_forward_ios_rounded,
-                    color: Colors.white.withOpacity(0.7),
+                    color: AppColors.textSecondary,
                     size: 16,
                   ),
                 ),
@@ -652,22 +575,15 @@ class _ConversationsScreenState extends State<ConversationsScreen> with TickerPr
           height: 56,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Colors.white.withOpacity(0.3),
-                Colors.white.withOpacity(0.1),
-              ],
-            ),
+            color: AppColors.surface,
             border: Border.all(
-              color: Colors.white.withOpacity(0.3),
+              color: AppColors.border,
               width: 2,
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 12,
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
             ],
@@ -694,15 +610,15 @@ class _ConversationsScreenState extends State<ConversationsScreen> with TickerPr
               width: 16,
               height: 16,
               decoration: BoxDecoration(
-                color: const Color(0xFF00C851),
+                color: AppColors.success,
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: Colors.white,
+                  color: AppColors.surface,
                   width: 2.5,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF00C851).withOpacity(0.4),
+                    color: AppColors.success.withOpacity(0.4),
                     blurRadius: 6,
                     offset: const Offset(0, 2),
                   ),
@@ -719,15 +635,9 @@ class _ConversationsScreenState extends State<ConversationsScreen> with TickerPr
       width: 52,
       height: 52,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.white.withOpacity(0.2),
-            Colors.white.withOpacity(0.1),
-          ],
-        ),
+        color: AppColors.surfaceBright,
         shape: BoxShape.circle,
+        border: Border.all(color: AppColors.border),
       ),
       child: Center(
         child: Text(
@@ -735,7 +645,7 @@ class _ConversationsScreenState extends State<ConversationsScreen> with TickerPr
               ? user!.displayName![0].toUpperCase()
               : '?',
           style: TextStyle(
-            color: Colors.white.withOpacity(0.8),
+            color: AppColors.textPrimary,
             fontSize: 24,
             fontWeight: FontWeight.w600,
           ),

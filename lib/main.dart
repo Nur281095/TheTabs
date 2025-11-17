@@ -5,6 +5,7 @@ import 'screens/conversations_screen.dart';
 import 'screens/phone_signup_screen.dart';
 import 'services/auth_service.dart';
 import 'services/topic_detection_service.dart';
+import 'config/app_colors.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,81 +36,92 @@ class ChatApp extends StatelessWidget {
     return ThemeData(
       useMaterial3: true,
       colorScheme: const ColorScheme.light(
-        primary: Color(0xFF667EEA),
-        secondary: Color(0xFF764BA2),
-        surface: Color(0xFFF8FAFF),
-        background: Color(0xFFF8FAFF),
-        onSurface: Color(0xFF1A1A1A),
-        onBackground: Color(0xFF1A1A1A),
+        primary: AppColors.primary,
+        secondary: AppColors.accent,
+        surface: AppColors.surface,
+        background: AppColors.background,
+        onSurface: AppColors.textPrimary,
+        onBackground: AppColors.textPrimary,
       ),
+      scaffoldBackgroundColor: AppColors.background,
       fontFamily: 'SF Pro Display', // Will fallback to system font
       textTheme: const TextTheme(
         headlineLarge: TextStyle(
           fontSize: 32,
           fontWeight: FontWeight.w700,
           letterSpacing: -0.5,
-          color: Color(0xFF1A1A1A),
+          color: AppColors.textPrimary,
         ),
         headlineMedium: TextStyle(
           fontSize: 28,
           fontWeight: FontWeight.w700,
           letterSpacing: -0.3,
-          color: Color(0xFF1A1A1A),
+          color: AppColors.textPrimary,
         ),
         titleLarge: TextStyle(
           fontSize: 22,
           fontWeight: FontWeight.w600,
           letterSpacing: -0.2,
-          color: Color(0xFF1A1A1A),
+          color: AppColors.textPrimary,
         ),
         titleMedium: TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.w600,
           letterSpacing: -0.1,
-          color: Color(0xFF1A1A1A),
+          color: AppColors.textPrimary,
         ),
         bodyLarge: TextStyle(
           fontSize: 16,
-          fontWeight: FontWeight.w400,
+          fontWeight: FontWeight.w500,
           letterSpacing: -0.1,
-          color: Color(0xFF3C3C43),
+          color: AppColors.textPrimary,
         ),
         bodyMedium: TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.w400,
           letterSpacing: -0.1,
-          color: Color(0xFF8E8E93),
+          color: AppColors.textSecondary,
+        ),
+        labelLarge: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+          letterSpacing: -0.1,
+          color: Colors.white,
         ),
       ),
       appBarTheme: const AppBarTheme(
         elevation: 0,
         scrolledUnderElevation: 0,
-        backgroundColor: Colors.transparent,
-        foregroundColor: Colors.white,
+        backgroundColor: AppColors.background,
+        foregroundColor: AppColors.textPrimary,
         centerTitle: false,
         titleTextStyle: TextStyle(
-          fontSize: 28,
+          fontSize: 24,
           fontWeight: FontWeight.w700,
-          letterSpacing: -0.5,
-          color: Colors.white,
+          letterSpacing: -0.3,
+          color: AppColors.textPrimary,
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           elevation: 0,
+          backgroundColor: AppColors.primary,
+          foregroundColor: Colors.white,
           shadowColor: Colors.transparent,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(14),
           ),
           textStyle: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
             letterSpacing: -0.1,
           ),
+          padding: const EdgeInsets.symmetric(vertical: 16),
         ),
       ),
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
         elevation: 0,
+        backgroundColor: AppColors.primary,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(16)),
         ),
@@ -119,12 +131,28 @@ class ChatApp extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
-        color: Colors.white,
+        color: AppColors.surface,
+        surfaceTintColor: Colors.transparent,
       ),
       dividerTheme: const DividerThemeData(
-        color: Color(0xFFE5E5EA),
-        thickness: 0.5,
+        color: AppColors.border,
+        thickness: 0.75,
         space: 1,
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: AppColors.surface,
+        hintStyle: const TextStyle(color: AppColors.textSecondary),
+        labelStyle: const TextStyle(color: AppColors.textSecondary),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: AppColors.border, width: 1.2),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: AppColors.primary, width: 1.4),
+        ),
       ),
     );
   }
@@ -151,10 +179,10 @@ class AuthWrapper extends StatelessWidget {
           // Show loading while checking auth state
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Scaffold(
-              backgroundColor: Color(0xFFF8FAFF),
+              backgroundColor: AppColors.background,
               body: Center(
                 child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF667EEA)),
+                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
                 ),
               ),
             );

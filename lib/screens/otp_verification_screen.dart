@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../services/auth_service.dart';
 import '../screens/conversations_screen.dart';
+import '../config/app_colors.dart';
 
 class OTPVerificationScreen extends StatefulWidget {
   final String phoneNumber;
@@ -206,14 +207,13 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFF),
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
+        backgroundColor: AppColors.background,
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back_ios_rounded,
-            color: Color(0xFF1A1A1A),
+            color: AppColors.textPrimary,
             size: 20,
           ),
           onPressed: () => Navigator.pop(context),
@@ -233,7 +233,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                 style: const TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF1A1A1A),
+                  color: AppColors.textPrimary,
                   letterSpacing: -0.5,
                 ),
               ),
@@ -244,7 +244,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w400,
-                    color: Color(0xFF8E8E93),
+                    color: AppColors.textSecondary,
                     height: 1.4,
                   ),
                   children: [
@@ -252,7 +252,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                       text: widget.phoneNumber,
                       style: const TextStyle(
                         fontWeight: FontWeight.w600,
-                        color: Color(0xFF1A1A1A),
+                        color: AppColors.textPrimary,
                       ),
                     ),
                   ],
@@ -266,27 +266,27 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: List.generate(6, (index) {
                   return Container(
-                    width: 48,
-                    height: 56,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: _otpFocusNodes[index].hasFocus
-                            ? const Color(0xFF667EEA)
-                            : _otpControllers[index].text.isNotEmpty
-                                ? const Color(0xFF34C759)
-                                : Colors.grey.withOpacity(0.2),
-                        width: 1.5,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.04),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
+                width: 48,
+                height: 56,
+                decoration: BoxDecoration(
+                  color: AppColors.surface,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: _otpFocusNodes[index].hasFocus
+                        ? AppColors.primary
+                        : _otpControllers[index].text.isNotEmpty
+                            ? AppColors.success
+                            : AppColors.border,
+                    width: 1.5,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.03),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
                     ),
+                  ],
+                ),
                     child: TextField(
                       controller: _otpControllers[index],
                       focusNode: _otpFocusNodes[index],
@@ -300,13 +300,13 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                         border: InputBorder.none,
                         counterText: '',
                       ),
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF1A1A1A),
-                      ),
-                      onChanged: (value) {
-                        _onOtpChanged(index, value);
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textPrimary,
+                    ),
+                    onChanged: (value) {
+                      _onOtpChanged(index, value);
                         setState(() {}); // Update UI
                       },
                     ),
@@ -324,7 +324,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
-                          color: Color(0xFF8E8E93),
+                          color: AppColors.textSecondary,
                         ),
                       )
                     : GestureDetector(
@@ -332,8 +332,9 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF667EEA).withOpacity(0.1),
+                            color: AppColors.surface,
                             borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: AppColors.border),
                           ),
                           child: _isResending
                               ? const SizedBox(
@@ -341,7 +342,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                                   height: 16,
                                   child: CircularProgressIndicator(
                                     strokeWidth: 2,
-                                    valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF667EEA)),
+                                    valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
                                   ),
                                 )
                               : Text(
@@ -349,7 +350,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                                   style: const TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w600,
-                                    color: Color(0xFF667EEA),
+                                    color: AppColors.primary,
                                   ),
                                 ),
                         ),
@@ -363,26 +364,14 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                 width: double.infinity,
                 height: 56,
                 decoration: BoxDecoration(
-                  gradient: _getOtpCode().length == 6
-                      ? LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            const Color(0xFF667EEA),
-                            const Color(0xFF764BA2),
-                          ],
-                        )
-                      : null,
-                  color: _getOtpCode().length == 6
-                      ? null
-                      : Colors.grey.withOpacity(0.3),
-                  borderRadius: BorderRadius.circular(16),
+                  color: _getOtpCode().length == 6 ? AppColors.primary : AppColors.border,
+                  borderRadius: BorderRadius.circular(14),
                   boxShadow: _getOtpCode().length == 6
                       ? [
                           BoxShadow(
-                            color: const Color(0xFF667EEA).withOpacity(0.3),
-                            blurRadius: 12,
-                            offset: const Offset(0, 4),
+                            color: AppColors.primary.withOpacity(0.15),
+                            blurRadius: 14,
+                            offset: const Offset(0, 6),
                           ),
                         ]
                       : null,
@@ -414,7 +403,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                             fontWeight: FontWeight.w600,
                             color: _getOtpCode().length == 6
                                 ? Colors.white
-                                : Colors.grey.shade600,
+                                : AppColors.textSecondary,
                             letterSpacing: -0.1,
                           ),
                         ),
