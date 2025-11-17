@@ -95,7 +95,7 @@ class _UsersListScreenState extends State<UsersListScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 4.0),
       child: Row(
         children: [
-          // Back button with glassmorphism effect
+          // Back button with modern soft contrast
           Container(
             margin: const EdgeInsets.only(left: 8, right: 16),
             child: Material(
@@ -115,7 +115,7 @@ class _UsersListScreenState extends State<UsersListScreen> {
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
+                        color: Colors.black.withOpacity(0.05),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
@@ -135,9 +135,9 @@ class _UsersListScreenState extends State<UsersListScreen> {
             child: Text(
               'New Message',
               style: TextStyle(
-                color: Colors.white,
+                color: AppColors.textPrimary,
                 fontSize: Platform.isIOS ? 17.0 : 20.0,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w700,
                 letterSpacing: Platform.isIOS ? -0.4 : -0.2,
                 height: 1.2,
               ),
@@ -162,26 +162,26 @@ class _UsersListScreenState extends State<UsersListScreen> {
             child: Text(
               'Find people to chat with',
               style: TextStyle(
-                color: Colors.white.withOpacity(0.9),
+                color: AppColors.textSecondary,
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
                 letterSpacing: -0.2,
               ),
             ),
           ),
-          // Modern search bar with glassmorphism
+          // Modern search bar with soft neutral surface
           Container(
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.15),
+              color: AppColors.surface,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: Colors.white.withOpacity(0.2),
+                color: AppColors.border,
                 width: 1,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 20,
+                  color: Colors.black.withOpacity(0.04),
+                  blurRadius: 18,
                   offset: const Offset(0, 4),
                 ),
               ],
@@ -189,22 +189,22 @@ class _UsersListScreenState extends State<UsersListScreen> {
             child: TextField(
               controller: searchController,
               style: const TextStyle(
-                color: Colors.white,
+                color: AppColors.textPrimary,
                 fontSize: 16,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w600,
                 letterSpacing: -0.1,
               ),
               decoration: InputDecoration(
                 hintText: 'Search by name or phone...',
-                hintStyle: TextStyle(
-                  color: Colors.white.withOpacity(0.7),
+                hintStyle: const TextStyle(
+                  color: AppColors.textSecondary,
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
                   letterSpacing: -0.1,
                 ),
-                prefixIcon: Icon(
+                prefixIcon: const Icon(
                   Icons.search_rounded,
-                  color: Colors.white.withOpacity(0.8),
+                  color: AppColors.textSecondary,
                   size: 24,
                 ),
                 suffixIcon: searchController.text.isNotEmpty
@@ -212,13 +212,13 @@ class _UsersListScreenState extends State<UsersListScreen> {
                         onTap: () => searchController.clear(),
                         child: Container(
                           margin: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.2),
+                          decoration: const BoxDecoration(
+                            color: AppColors.surfaceBright,
                             shape: BoxShape.circle,
                           ),
-                          child: Icon(
+                          child: const Icon(
                             Icons.close_rounded,
-                            color: Colors.white.withOpacity(0.8),
+                            color: AppColors.textSecondary,
                             size: 18,
                           ),
                         ),
@@ -263,15 +263,15 @@ class _UsersListScreenState extends State<UsersListScreen> {
         bottom: index == filteredUsers.length - 1 ? 0 : 8,
       ),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.15),
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: Colors.white.withOpacity(0.2),
+          color: AppColors.border,
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withOpacity(0.05),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -292,27 +292,27 @@ class _UsersListScreenState extends State<UsersListScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        user.displayName ?? 'Unknown User',
-                        style: const TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                          letterSpacing: -0.2,
+                        Text(
+                          user.displayName ?? 'Unknown User',
+                          style: const TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.textPrimary,
+                            letterSpacing: -0.2,
+                          ),
                         ),
-                      ),
                       const SizedBox(height: 6),
                       if (user.about?.isNotEmpty == true)
                         Padding(
                           padding: const EdgeInsets.only(bottom: 4),
                           child: Text(
                             user.about!,
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.white.withOpacity(0.8),
-                              letterSpacing: -0.1,
-                            ),
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w400,
+                                color: AppColors.textSecondary,
+                                letterSpacing: -0.1,
+                              ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -321,31 +321,31 @@ class _UsersListScreenState extends State<UsersListScreen> {
                         user.onlineStatus == 'online' 
                             ? 'Active now'
                             : _formatLastSeen(user.lastSeen),
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w400,
-                          color: user.onlineStatus == 'online' 
-                              ? const Color(0xFF00C851).withOpacity(0.9)
-                              : Colors.white.withOpacity(0.6),
-                          letterSpacing: -0.1,
-                        ),
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                            color: user.onlineStatus == 'online'
+                                ? AppColors.success
+                                : AppColors.textSecondary,
+                            letterSpacing: -0.1,
+                          ),
                       ),
                     ],
                   ),
                 ),
                 // Chat arrow indicator
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: AppColors.surfaceBright,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      color: AppColors.textSecondary,
+                      size: 16,
+                    ),
                   ),
-                  child: Icon(
-                    Icons.arrow_forward_ios_rounded,
-                    color: Colors.white.withOpacity(0.7),
-                    size: 16,
-                  ),
-                ),
               ],
             ),
           ),
@@ -357,31 +357,24 @@ class _UsersListScreenState extends State<UsersListScreen> {
   Widget _buildModernUserAvatar(UserModel user) {
     return Stack(
       children: [
-        Container(
-          width: 56,
-          height: 56,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Colors.white.withOpacity(0.3),
-                Colors.white.withOpacity(0.1),
+          Container(
+            width: 56,
+            height: 56,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppColors.surface,
+              border: Border.all(
+                color: AppColors.border,
+                width: 2,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
               ],
             ),
-            border: Border.all(
-              color: Colors.white.withOpacity(0.3),
-              width: 2,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
           child: ClipOval(
             child: user.profilePhotoUrl != null
                 ? Image.network(
@@ -403,21 +396,21 @@ class _UsersListScreenState extends State<UsersListScreen> {
             child: Container(
               width: 16,
               height: 16,
-              decoration: BoxDecoration(
-                color: const Color(0xFF00C851),
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: Colors.white,
-                  width: 2.5,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF00C851).withOpacity(0.4),
-                    blurRadius: 6,
-                    offset: const Offset(0, 2),
+                decoration: BoxDecoration(
+                  color: AppColors.success,
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: AppColors.surface,
+                    width: 2.5,
                   ),
-                ],
-              ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.success.withOpacity(0.25),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
             ),
           ),
       ],
@@ -429,19 +422,13 @@ class _UsersListScreenState extends State<UsersListScreen> {
       width: 52,
       height: 52,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.white.withOpacity(0.2),
-            Colors.white.withOpacity(0.1),
-          ],
-        ),
+        color: AppColors.surface,
+        border: Border.all(color: AppColors.border),
         shape: BoxShape.circle,
       ),
-      child: Icon(
+      child: const Icon(
         Icons.person_rounded,
-        color: Colors.white.withOpacity(0.8),
+        color: AppColors.textSecondary,
         size: 28,
       ),
     );
@@ -528,75 +515,75 @@ class _UsersListScreenState extends State<UsersListScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // Beautiful empty state icon
-            Container(
-              width: 120,
-              height: 120,
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.15),
-                borderRadius: BorderRadius.circular(60),
-                border: Border.all(
-                  color: Colors.white.withOpacity(0.3),
-                  width: 2,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 20,
-                    offset: const Offset(0, 8),
+              Container(
+                width: 120,
+                height: 120,
+                decoration: BoxDecoration(
+                  color: AppColors.surface,
+                  borderRadius: BorderRadius.circular(60),
+                  border: Border.all(
+                    color: AppColors.border,
+                    width: 2,
                   ),
-                ],
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 16,
+                      offset: const Offset(0, 6),
+                    ),
+                  ],
+                ),
+                child: Icon(
+                  searchController.text.isNotEmpty
+                    ? Icons.search_off_rounded
+                    : Icons.people_outline_rounded,
+                  size: 60,
+                  color: AppColors.textSecondary,
+                ),
               ),
-              child: Icon(
-                searchController.text.isNotEmpty 
-                  ? Icons.search_off_rounded 
-                  : Icons.people_outline_rounded,
-                size: 60,
-                color: Colors.white.withOpacity(0.8),
-              ),
-            ),
             const SizedBox(height: 32),
             // Title
-            Text(
-              searchController.text.isNotEmpty 
-                ? 'No Results Found' 
-                : 'No Users Available',
-              style: const TextStyle(
-                fontSize: 24,
-                color: Colors.white,
-                fontWeight: FontWeight.w700,
-                letterSpacing: -0.3,
+              Text(
+                searchController.text.isNotEmpty
+                  ? 'No Results Found'
+                  : 'No Users Available',
+                style: const TextStyle(
+                  fontSize: 24,
+                  color: AppColors.textPrimary,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: -0.3,
+                ),
               ),
-            ),
             const SizedBox(height: 12),
             // Description
-            Text(
-              searchController.text.isNotEmpty
-                ? 'Try adjusting your search criteria\nor check the spelling'
-                : 'There are no users to display\nat the moment',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.white.withOpacity(0.7),
-                fontWeight: FontWeight.w400,
-                height: 1.5,
-                letterSpacing: -0.1,
+              Text(
+                searchController.text.isNotEmpty
+                  ? 'Try adjusting your search criteria\nor check the spelling'
+                  : 'There are no users to display\nat the moment',
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: AppColors.textSecondary,
+                  fontWeight: FontWeight.w400,
+                  height: 1.5,
+                  letterSpacing: -0.1,
+                ),
+                textAlign: TextAlign.center,
               ),
-              textAlign: TextAlign.center,
-            ),
             if (searchController.text.isNotEmpty) ...[
               const SizedBox(height: 24),
               // Clear search button
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: Colors.white.withOpacity(0.2),
-                    width: 1,
+                Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.surface,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: AppColors.border,
+                      width: 1,
+                    ),
                   ),
-                ),
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
                     borderRadius: BorderRadius.circular(16),
                     onTap: () => searchController.clear(),
                     child: Padding(
@@ -607,21 +594,21 @@ class _UsersListScreenState extends State<UsersListScreen> {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(
-                            Icons.clear_rounded,
-                            color: Colors.white.withOpacity(0.8),
-                            size: 20,
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            'Clear Search',
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.9),
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: -0.1,
+                            const Icon(
+                              Icons.clear_rounded,
+                              color: AppColors.textSecondary,
+                              size: 20,
                             ),
-                          ),
+                            const SizedBox(width: 8),
+                            const Text(
+                              'Clear Search',
+                              style: TextStyle(
+                                color: AppColors.textPrimary,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: -0.1,
+                              ),
+                            ),
                         ],
                       ),
                     ),
