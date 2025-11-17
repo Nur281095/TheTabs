@@ -5,6 +5,9 @@ import 'dart:async';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:path/path.dart' as path;
+import 'package:mime/mime.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../models/message.dart';
 import '../models/user.dart';
 import '../models/chat_tab.dart';
@@ -260,6 +263,41 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
       duration: const Duration(milliseconds: 250),
       curve: Curves.easeInOut,
     );
+  }
+
+  Future<bool> _ensurePermissions(
+    List<Permission> permissions,
+    String errorMessage,
+  ) async {
+    final statuses = await permissions.request();
+    final allGranted = statuses.values.every((status) => status.isGranted);
+
+    if (allGranted) return true;
+
+    final permanentlyDenied = statuses.values.any((status) => status.isPermanentlyDenied);
+    if (permanentlyDenied) {
+      await openAppSettings();
+    }
+
+    if (mounted) {
+      _showSnackBar(errorMessage);
+    }
+    return false;
+  }
+
+  List<Permission> _mediaPermissions({bool includeAudio = false, bool includeVideo = false}) {
+    if (Platform.isIOS) return [Permission.photos];
+
+    final permissions = <Permission>[Permission.storage];
+
+    if (includeAudio) permissions.add(Permission.audio);
+    if (includeVideo) permissions.add(Permission.videos);
+
+    return permissions;
+  }
+
+  String _detectMimeType(File file, {required String fallback}) {
+    return lookupMimeType(file.path) ?? fallback;
   }
 
   @override
@@ -618,11 +656,11 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
               width: 100,
               height: 100,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.15),
+                color: AppColors.surface,
                 borderRadius: BorderRadius.circular(50),
                 border: Border.all(
-                  color: Colors.white.withOpacity(0.3),
-                  width: 2,
+                  color: AppColors.border,
+                  width: 1.2,
                 ),
                 boxShadow: [
                   BoxShadow(
@@ -635,7 +673,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
               child: Icon(
                 Icons.chat_bubble_outline_rounded,
                 size: 50,
-                color: Colors.white.withOpacity(0.8),
+                color: AppColors.primary,
               ),
             ),
             const SizedBox(height: 32),
@@ -643,7 +681,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
               'Start the conversation',
               style: TextStyle(
                 fontSize: 24,
-                color: Colors.white,
+                color: AppColors.textPrimary,
                 fontWeight: FontWeight.w700,
                 letterSpacing: -0.3,
               ),
@@ -653,11 +691,11 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.1),
+                color: AppColors.surface,
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: Colors.white.withOpacity(0.2),
-                  width: 1,
+                  color: AppColors.border,
+                  width: 1.2,
                 ),
                 boxShadow: [
                   BoxShadow(
@@ -671,7 +709,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                 'Send your first message to start discussing ${currentTab?.tabName ?? 'this topic'}',
                 style: TextStyle(
                   fontSize: 16,
-                  color: Colors.white.withOpacity(0.8),
+                  color: AppColors.textSecondary,
                   fontWeight: FontWeight.w400,
                   height: 1.5,
                   letterSpacing: -0.1,
@@ -890,18 +928,18 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   Widget _buildMessageContent(MessageModel message) {
     switch (message.messageType) {
       case MessageType.text:
-          return Text(
-            message.content ?? '',
-            style: const TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w500,
-              color: AppColors.textPrimary,
-              height: 1.3,
-              letterSpacing: -0.1,
-            ),
-            softWrap: true,
-            overflow: TextOverflow.visible,
-          );
+        return Text(
+          message.content ?? '',
+          style: const TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.w500,
+            color: AppColors.textPrimary,
+            height: 1.3,
+            letterSpacing: -0.1,
+          ),
+          softWrap: true,
+          overflow: TextOverflow.visible,
+        );
       case MessageType.image:
         return _buildImageMessage(message);
       case MessageType.file:
@@ -910,7 +948,6 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   }
 
   Widget _buildImageMessage(MessageModel message) {
-    bool isFromCurrentUser = message.isFromCurrentUser(_authService.currentUserId ?? '');
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -939,24 +976,17 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                 width: 200,
                 height: 150,
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Colors.white.withOpacity(0.15),
-                      Colors.white.withOpacity(0.08),
-                    ],
-                  ),
+                  color: AppColors.surface,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: Colors.white.withOpacity(0.2),
+                    color: AppColors.border,
                     width: 1,
                   ),
                 ),
-                child: Icon(
+                child: const Icon(
                   Icons.image_not_supported_rounded,
                   size: 40,
-                  color: Colors.white.withOpacity(0.6),
+                  color: AppColors.textSecondary,
                 ),
               );
             },
@@ -966,23 +996,16 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                 width: 200,
                 height: 150,
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Colors.white.withOpacity(0.15),
-                      Colors.white.withOpacity(0.08),
-                    ],
-                  ),
+                  color: AppColors.surface,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: Colors.white.withOpacity(0.2),
+                    color: AppColors.border,
                     width: 1,
                   ),
                 ),
                 child: const Center(
                   child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
                     strokeWidth: 2,
                   ),
                 ),
@@ -1005,18 +1028,11 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
         padding: const EdgeInsets.all(16),
         constraints: const BoxConstraints(minWidth: 200, maxWidth: 280),
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Colors.white.withOpacity(0.2),
-              Colors.white.withOpacity(0.1),
-            ],
-          ),
+          color: AppColors.surface,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: Colors.white.withOpacity(0.3),
-            width: 1,
+            color: AppColors.border,
+            width: 1.2,
           ),
           boxShadow: [
             BoxShadow(
@@ -1035,12 +1051,13 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.15),
+                    color: AppColors.surfaceBright,
                     borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: AppColors.border),
                   ),
                   child: Icon(
                     FileUploadService.getFileIcon(fileName),
-                    color: Colors.white.withOpacity(0.9),
+                    color: AppColors.textPrimary,
                     size: 24,
                   ),
                 ),
@@ -1054,7 +1071,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
-                          color: Colors.white.withOpacity(0.95),
+                          color: AppColors.textPrimary,
                           letterSpacing: -0.1,
                         ),
                         maxLines: 1,
@@ -1076,7 +1093,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w400,
-                                color: Colors.white.withOpacity(0.7),
+                                color: AppColors.textSecondary,
                               ),
                             );
                           }
@@ -1085,7 +1102,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w400,
-                              color: Colors.white.withOpacity(0.7),
+                              color: AppColors.textSecondary,
                             ),
                           );
                         },
@@ -1095,7 +1112,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                 ),
                 Icon(
                   Icons.download_rounded,
-                  color: Colors.white.withOpacity(0.7),
+                  color: AppColors.textSecondary,
                   size: 20,
                 ),
               ],
@@ -1153,14 +1170,21 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
       return;
     }
 
-    // TODO: Implement file opening/downloading
-    // For now, just show a message
-    _showSnackBar('Opening $fileName...');
-    
-    // You can implement actual file opening here:
-    // - For web: window.open(fileUrl)
-    // - For mobile: use url_launcher or similar package
-    // - For desktop: use url_launcher or file system operations
+    final uri = Uri.tryParse(fileUrl);
+
+    if (uri == null) {
+      _showSnackBar('Invalid file link for $fileName');
+      return;
+    }
+
+    launchUrl(uri, mode: LaunchMode.externalApplication).then((opened) {
+      if (!opened) {
+        _showSnackBar('Unable to open $fileName');
+      }
+    }).catchError((error) {
+      print('Error opening file: $error');
+      _showSnackBar('Unable to open $fileName');
+    });
   }
 
 
@@ -1613,6 +1637,12 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   // Image picking methods
   Future<void> _pickImageFromCamera() async {
     try {
+      final allowed = await _ensurePermissions(
+        [Permission.camera],
+        'Camera access is required to capture a photo.',
+      );
+      if (!allowed) return;
+
       final XFile? pickedFile = await _imagePicker.pickImage(
         source: ImageSource.camera,
         maxWidth: 1920,
@@ -1631,6 +1661,12 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
 
   Future<void> _pickImageFromGallery() async {
     try {
+      final allowed = await _ensurePermissions(
+        _mediaPermissions(includeVideo: true),
+        'Photos access is required to choose from your gallery.',
+      );
+      if (!allowed) return;
+
       final XFile? pickedFile = await _imagePicker.pickImage(
         source: ImageSource.gallery,
         maxWidth: 1920,
@@ -1649,6 +1685,12 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
 
   Future<void> _pickVideo() async {
     try {
+      final allowed = await _ensurePermissions(
+        _mediaPermissions(includeVideo: true),
+        'Media access is required to pick a video.',
+      );
+      if (!allowed) return;
+
       final XFile? pickedFile = await _imagePicker.pickVideo(
         source: ImageSource.gallery,
         maxDuration: const Duration(minutes: 5),
@@ -1665,6 +1707,12 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
 
   Future<void> _pickFile() async {
     try {
+      final allowed = await _ensurePermissions(
+        _mediaPermissions(includeAudio: true, includeVideo: true),
+        'Storage access is required to attach a document.',
+      );
+      if (!allowed) return;
+
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.any,
         allowMultiple: false,
@@ -1683,6 +1731,12 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
 
   Future<void> _pickAudio() async {
     try {
+      final allowed = await _ensurePermissions(
+        _mediaPermissions(includeAudio: true),
+        'Audio permission is required to select a sound file.',
+      );
+      if (!allowed) return;
+
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.audio,
         allowMultiple: false,
@@ -1726,7 +1780,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
           tabId: currentTab.id,
           messageType: MessageType.image,
           mediaUrl: downloadUrl,
-          mediaType: 'image/jpeg',
+          mediaType: _detectMimeType(imageFile, fallback: 'image/jpeg'),
           content: null, // No caption for now
         );
 
@@ -1774,7 +1828,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
           tabId: currentTab.id,
           messageType: messageType,
           mediaUrl: downloadUrl,
-          mediaType: path.extension(file.path),
+          mediaType: _detectMimeType(file, fallback: 'application/octet-stream'),
           content: path.basename(file.path),
         );
 
